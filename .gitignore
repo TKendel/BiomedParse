@@ -116,7 +116,11 @@ Config/*
 # datasets
 xdecoder_data
 output
+results
+data
 
-#biomedparse_eval_results.json
-
+# biomedparse_eval_results.json
 .amlignore*
+
+# biomed config
+configs/config.yaml
