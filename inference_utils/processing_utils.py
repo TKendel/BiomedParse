@@ -88,7 +88,10 @@ def read_dicom(image_path, is_CT, site=None):
     
     return image_array
 
-
+"""
+Currently this only works per once slice basis.
+TODO:  extend to processing the whole image slices 
+"""
 def read_nifti(image_path, is_CT, slice_idx, site=None, HW_index=(0, 1), channel_idx=None):
     # read nifti file and return pixel data
     
@@ -113,7 +116,27 @@ def read_nifti(image_path, is_CT, slice_idx, site=None, HW_index=(0, 1), channel
         image_array = image_array[:, :, slice_idx, channel_idx]
         
     image_array = process_intensity_image(image_array, is_CT, site)
+
+    # for slice in range(image_array.shape[2]):
+    #     # imgplot = plt.imshow(image_array[slice])
+    #     plt.imsave(f'test{slice}.png', image_array[:,:,slice])
+
     return image_array
+
+
+def read_nifti_only(image_path): 
+    nii = nib.load(image_path)
+    image_array = nii.get_fdata()
+    
+    return image_array, nii.affine
+
+
+def resize_to_original(image, w, h):
+    # resize to original size
+    resize_image = transform.resize(image, (1, w, h), 
+                                    mode='constant', preserve_range=True, anti_aliasing=True)
+    
+    return resize_image
     
 
 
