@@ -9,10 +9,14 @@ import torch.distributed as dist
 
 
 def apply_distributed(opt):
+    """
+    Runs linux command hostname -I with subprocess
+    """
     if opt['rank'] == 0:
-        hostname_cmd = ["hostname -I"]
-        result = subprocess.check_output(hostname_cmd, shell=True)
-        master_address = result.decode('utf-8').split()[0]
+        # hostname_cmd = ["hostname -I"]
+        # result = subprocess.check_output(hostname_cmd, shell=True)
+        # master_address = result.decode('utf-8').split()[0]
+        master_address = '127.0.0.1'
         master_port = opt['PORT']
     else:
         master_address = None
@@ -23,7 +27,7 @@ def apply_distributed(opt):
 
     if torch.distributed.is_available() and opt['world_size'] > 1:
         init_method_url = 'tcp://{}:{}'.format(master_address, master_port)
-        backend = 'nccl'
+        backend = 'gloo'
         world_size = opt['world_size']
         rank = opt['rank']
         torch.distributed.init_process_group(backend=backend,

@@ -86,7 +86,8 @@ class MPIAdapter:
                 # we use "hostname -I" command on rank 0 to get the master address
                 self.env_info = 'multi-node other MPI environment'
                 if self.rank == 0:
-                    hostname_cmd = ["hostname -I"]
+                    # hostname_cmd = ["hostname -I"]
+                    hostname_cmd = local_address
                     result = subprocess.check_output(hostname_cmd, shell=True)
                     self.master_address = result.decode('utf-8').split()[0]
                     self.master_port = default_torch_distributed_port
