@@ -133,11 +133,13 @@ def read_nifti_only(image_path):
 
 def resize_to_original(image, w, h):
     # resize to original size
-    resize_image = transform.resize(image, (1, w, h), 
-                                    mode='constant', preserve_range=True, anti_aliasing=True)
-    
+    if image.shape[0] == image.shape[1]:
+        resize_image = transform.resize(image, (w, h), 
+                                        mode='constant', preserve_range=True, anti_aliasing=True)
+    else:
+        resize_image = transform.resize(image, (1, w, h), 
+                                        mode='constant', preserve_range=True, anti_aliasing=True)
     return resize_image
-    
 
 
 def read_rgb(image_path):
