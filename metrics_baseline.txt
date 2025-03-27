@@ -1,0 +1,456 @@
+3D_DICE score for patient 100033 is : 0.004
+3D_IoU score for patient 100033 is : 0.002
+3D_HD score for patient 100033 is : 409.84631265878187
+
+3D_DICE score for patient 100034 is : 0.083
+3D_IoU score for patient 100034 is : 0.043
+3D_HD score for patient 100034 is : 150.10329776523898
+
+3D_DICE score for patient 100043 is : 0.035
+3D_IoU score for patient 100043 is : 0.018
+3D_HD score for patient 100043 is : 337.764711004569
+
+3D_DICE score for patient 100050 is : 0.000
+3D_IoU score for patient 100050 is : 0.000
+3D_HD score for patient 100050 is : 307.6897788357618
+
+3D_DICE score for patient 100056 is : 0.059
+3D_IoU score for patient 100056 is : 0.030
+3D_HD score for patient 100056 is : 197.44366285095097
+
+3D_DICE score for patient 100058 is : 0.011
+3D_IoU score for patient 100058 is : 0.006
+3D_HD score for patient 100058 is : 225.66568192793517
+
+3D_DICE score for patient 100060 is : 0.000
+3D_IoU score for patient 100060 is : 0.000
+3D_HD score for patient 100060 is : 216.0462913359079
+
+3D_DICE score for patient 100065 is : 0.014
+3D_IoU score for patient 100065 is : 0.007
+3D_HD score for patient 100065 is : 251.7558340932738
+
+3D_DICE score for patient 100074 is : 0.044
+3D_IoU score for patient 100074 is : 0.023
+3D_HD score for patient 100074 is : 338.90706690772913
+
+3D_DICE score for patient 100082 is : 0.063
+3D_IoU score for patient 100082 is : 0.033
+3D_HD score for patient 100082 is : 392.495859850776
+
+3D_DICE score for patient 100086 is : 0.058
+3D_IoU score for patient 100086 is : 0.030
+3D_HD score for patient 100086 is : 213.66562662253375
+
+3D_DICE score for patient 100091 is : 0.000
+3D_IoU score for patient 100091 is : 0.000
+3D_HD score for patient 100091 is : 472.10274305494136
+
+3D_DICE score for patient 100093 is : 0.042
+3D_IoU score for patient 100093 is : 0.022
+3D_HD score for patient 100093 is : 173.51368822084325
+
+3D_DICE score for patient 100096 is : 0.053
+3D_IoU score for patient 100096 is : 0.027
+3D_HD score for patient 100096 is : 347.3067808148871
+
+3D_DICE score for patient 100100 is : 0.014
+3D_IoU score for patient 100100 is : 0.007
+3D_HD score for patient 100100 is : 242.75296084703066
+
+3D_DICE score for patient 100101 is : 0.000
+3D_IoU score for patient 100101 is : 0.000
+3D_HD score for patient 100101 is : 529.8773442977158
+
+3D_DICE score for patient 100102 is : 0.001
+3D_IoU score for patient 100102 is : 0.000
+3D_HD score for patient 100102 is : 437.12812766967994
+
+3D_DICE score for patient 100107 is : 0.000
+3D_IoU score for patient 100107 is : 0.000
+3D_HD score for patient 100107 is : 496.8903299521938
+
+3D_DICE score for patient 100110 is : 0.016
+3D_IoU score for patient 100110 is : 0.008
+3D_HD score for patient 100110 is : 182.68278517692903
+
+3D_DICE score for patient 100113 is : 0.692
+3D_IoU score for patient 100113 is : 0.529
+3D_HD score for patient 100113 is : 310.827926673264
+
+3D_DICE score for patient 100116 is : 0.040
+3D_IoU score for patient 100116 is : 0.020
+3D_HD score for patient 100116 is : 141.71097346359596
+
+3D_DICE score for patient 100124 is : 0.000
+3D_IoU score for patient 100124 is : 0.000
+3D_HD score for patient 100124 is : 372.20155829872607
+
+3D_DICE score for patient 100126 is : 0.007
+3D_IoU score for patient 100126 is : 0.003
+3D_HD score for patient 100126 is : 235.6777460856243
+
+3D_DICE score for patient 100127 is : 0.000
+3D_IoU score for patient 100127 is : 0.000
+3D_HD score for patient 100127 is : 375.198614069935
+
+3D_DICE score for patient 100130 is : 0.000
+3D_IoU score for patient 100130 is : 0.000
+3D_HD score for patient 100130 is : 245.09181952892675
+
+3D_DICE score for patient 100134 is : 0.481
+3D_IoU score for patient 100134 is : 0.317
+3D_HD score for patient 100134 is : 376.6563420413892
+
+3D_DICE score for patient 100135 is : 0.028
+3D_IoU score for patient 100135 is : 0.014
+3D_HD score for patient 100135 is : 230.91340368198638
+
+3D_DICE score for patient 100138 is : 0.014
+3D_IoU score for patient 100138 is : 0.007
+3D_HD score for patient 100138 is : 258.94787120190813
+
+3D_DICE score for patient 100140 is : 0.002
+3D_IoU score for patient 100140 is : 0.001
+3D_HD score for patient 100140 is : 177.2032731074683
+
+3D_DICE score for patient 100143 is : 0.000
+3D_IoU score for patient 100143 is : 0.000
+3D_HD score for patient 100143 is : 242.8785704832767
+
+3D_DICE score for patient 100144 is : 0.000
+3D_IoU score for patient 100144 is : 0.000
+3D_HD score for patient 100144 is : 374.66384933697566
+
+3D_DICE score for patient 100150 is : 0.002
+3D_IoU score for patient 100150 is : 0.001
+3D_HD score for patient 100150 is : 395.18476691289607
+
+3D_DICE score for patient 100153 is : 0.215
+3D_IoU score for patient 100153 is : 0.120
+3D_HD score for patient 100153 is : 253.67104683033892
+
+3D_DICE score for patient 100157 is : 0.018
+3D_IoU score for patient 100157 is : 0.009
+3D_HD score for patient 100157 is : 281.2276657798802
+
+3D_DICE score for patient 100161 is : 0.017
+3D_IoU score for patient 100161 is : 0.009
+3D_HD score for patient 100161 is : 319.6028785852843
+
+3D_DICE score for patient 100162 is : 0.137
+3D_IoU score for patient 100162 is : 0.074
+3D_HD score for patient 100162 is : 207.5596299861801
+
+3D_DICE score for patient 100163 is : 0.052
+3D_IoU score for patient 100163 is : 0.027
+3D_HD score for patient 100163 is : 231.27040450520252
+
+3D_DICE score for patient 100164 is : 0.005
+3D_IoU score for patient 100164 is : 0.002
+3D_HD score for patient 100164 is : 573.5451159237606
+
+3D_DICE score for patient 100166 is : 0.032
+3D_IoU score for patient 100166 is : 0.016
+3D_HD score for patient 100166 is : 179.0139659356219
+
+3D_DICE score for patient 100167 is : 0.027
+3D_IoU score for patient 100167 is : 0.014
+3D_HD score for patient 100167 is : 182.10161998181127
+
+3D_DICE score for patient 100168 is : 0.034
+3D_IoU score for patient 100168 is : 0.017
+3D_HD score for patient 100168 is : 503.55238059212866
+
+3D_DICE score for patient 100176 is : 0.061
+3D_IoU score for patient 100176 is : 0.031
+3D_HD score for patient 100176 is : 164.6359620496081
+
+3D_DICE score for patient 100180 is : 0.010
+3D_IoU score for patient 100180 is : 0.005
+3D_HD score for patient 100180 is : 230.5168106668145
+
+3D_DICE score for patient 100183 is : 0.000
+3D_IoU score for patient 100183 is : 0.000
+3D_HD score for patient 100183 is : 216.37467504308356
+
+3D_DICE score for patient 100187 is : 0.003
+3D_IoU score for patient 100187 is : 0.002
+3D_HD score for patient 100187 is : 391.53799304792886
+
+3D_DICE score for patient 100194 is : 0.000
+3D_IoU score for patient 100194 is : 0.000
+3D_HD score for patient 100194 is : 603.2909745719722
+
+3D_DICE score for patient 100196 is : 0.040
+3D_IoU score for patient 100196 is : 0.020
+3D_HD score for patient 100196 is : 279.41904015295734
+
+3D_DICE score for patient 100197 is : 0.006
+3D_IoU score for patient 100197 is : 0.003
+3D_HD score for patient 100197 is : 228.32652057962954
+
+3D_DICE score for patient 100200 is : 0.000
+3D_IoU score for patient 100200 is : 0.000
+3D_HD score for patient 100200 is : 341.00293253871
+
+3D_DICE score for patient 100204 is : 0.018
+3D_IoU score for patient 100204 is : 0.009
+3D_HD score for patient 100204 is : 303.43697862983015
+
+3D_DICE score for patient 100205 is : 0.123
+3D_IoU score for patient 100205 is : 0.065
+3D_HD score for patient 100205 is : 136.7808466123821
+
+3D_DICE score for patient 100208 is : 0.002
+3D_IoU score for patient 100208 is : 0.001
+3D_HD score for patient 100208 is : 270.1592123174777
+
+3D_DICE score for patient 100213 is : 0.000
+3D_IoU score for patient 100213 is : 0.000
+3D_HD score for patient 100213 is : 278.77230852435827
+
+3D_DICE score for patient 100217 is : 0.000
+3D_IoU score for patient 100217 is : 0.000
+3D_HD score for patient 100217 is : 312.385979198811
+
+3D_DICE score for patient 100219 is : 0.002
+3D_IoU score for patient 100219 is : 0.001
+3D_HD score for patient 100219 is : 236.8902699563661
+
+3D_DICE score for patient 100220 is : 0.095
+3D_IoU score for patient 100220 is : 0.050
+3D_HD score for patient 100220 is : 220.13859270922944
+
+3D_DICE score for patient 100226 is : 0.008
+3D_IoU score for patient 100226 is : 0.004
+3D_HD score for patient 100226 is : 161.14899937635357
+
+3D_DICE score for patient 100229 is : 0.011
+3D_IoU score for patient 100229 is : 0.006
+3D_HD score for patient 100229 is : 507.1025537305053
+
+3D_DICE score for patient 100234 is : 0.020
+3D_IoU score for patient 100234 is : 0.010
+3D_HD score for patient 100234 is : 317.3562666783185
+
+3D_DICE score for patient 100235 is : 0.044
+3D_IoU score for patient 100235 is : 0.023
+3D_HD score for patient 100235 is : 425.70999518451526
+
+3D_DICE score for patient 100243 is : 0.002
+3D_IoU score for patient 100243 is : 0.001
+3D_HD score for patient 100243 is : 248.07257002740147
+
+3D_DICE score for patient 100244 is : 0.024
+3D_IoU score for patient 100244 is : 0.012
+3D_HD score for patient 100244 is : 351.92470785666643
+
+3D_DICE score for patient 100245 is : 0.010
+3D_IoU score for patient 100245 is : 0.005
+3D_HD score for patient 100245 is : 184.20369160253006
+
+3D_DICE score for patient 100246 is : 0.020
+3D_IoU score for patient 100246 is : 0.010
+3D_HD score for patient 100246 is : 289.0173005202284
+
+3D_DICE score for patient 100247 is : 0.115
+3D_IoU score for patient 100247 is : 0.061
+3D_HD score for patient 100247 is : 270.3220301788221
+
+3D_DICE score for patient 100248 is : 0.000
+3D_IoU score for patient 100248 is : 0.000
+3D_HD score for patient 100248 is : 290.3893937457083
+
+3D_DICE score for patient 100255 is : 0.000
+3D_IoU score for patient 100255 is : 0.000
+3D_HD score for patient 100255 is : 633.6970885210062
+
+3D_DICE score for patient 100257 is : 0.004
+3D_IoU score for patient 100257 is : 0.002
+3D_HD score for patient 100257 is : 235.39966015268587
+
+3D_DICE score for patient 100259 is : 0.001
+3D_IoU score for patient 100259 is : 0.001
+3D_HD score for patient 100259 is : 245.5911236180982
+
+3D_DICE score for patient 100261 is : 0.041
+3D_IoU score for patient 100261 is : 0.021
+3D_HD score for patient 100261 is : 181.20982313329483
+
+3D_DICE score for patient 100262 is : 0.000
+3D_IoU score for patient 100262 is : 0.000
+3D_HD score for patient 100262 is : 199.88246546408217
+
+3D_DICE score for patient 100265 is : 0.000
+3D_IoU score for patient 100265 is : 0.000
+3D_HD score for patient 100265 is : 240.73844728252277
+
+3D_DICE score for patient 100266 is : 0.000
+3D_IoU score for patient 100266 is : 0.000
+3D_HD score for patient 100266 is : 198.07321878537743
+
+3D_DICE score for patient 100267 is : 0.086
+3D_IoU score for patient 100267 is : 0.045
+3D_HD score for patient 100267 is : 151.04304022363957
+
+3D_DICE score for patient 100275 is : 0.028
+3D_IoU score for patient 100275 is : 0.014
+3D_HD score for patient 100275 is : 199.06531591414915
+
+3D_DICE score for patient 100276 is : 0.000
+3D_IoU score for patient 100276 is : 0.000
+3D_HD score for patient 100276 is : 452.5748556868797
+
+3D_DICE score for patient 100278 is : 0.123
+3D_IoU score for patient 100278 is : 0.065
+3D_HD score for patient 100278 is : 136.7808466123821
+
+3D_DICE score for patient 100285 is : 0.001
+3D_IoU score for patient 100285 is : 0.001
+3D_HD score for patient 100285 is : 414.68662867278465
+
+3D_DICE score for patient 100290 is : 0.001
+3D_IoU score for patient 100290 is : 0.000
+3D_HD score for patient 100290 is : 499.40564674420733
+
+3D_DICE score for patient 100295 is : 0.000
+3D_IoU score for patient 100295 is : 0.000
+3D_HD score for patient 100295 is : 205.8616039964714
+
+3D_DICE score for patient 100296 is : 0.006
+3D_IoU score for patient 100296 is : 0.003
+3D_HD score for patient 100296 is : 373.9425089502396
+
+3D_DICE score for patient 100312 is : 0.000
+3D_IoU score for patient 100312 is : 0.000
+3D_HD score for patient 100312 is : 290.7593506664919
+
+3D_DICE score for patient 100316 is : 0.007
+3D_IoU score for patient 100316 is : 0.003
+3D_HD score for patient 100316 is : 455.30868649741353
+
+3D_DICE score for patient 100323 is : 0.030
+3D_IoU score for patient 100323 is : 0.015
+3D_HD score for patient 100323 is : 203.19694879598956
+
+3D_DICE score for patient 100324 is : 0.000
+3D_IoU score for patient 100324 is : 0.000
+3D_HD score for patient 100324 is : 307.1904946446097
+
+3D_DICE score for patient 100328 is : 0.001
+3D_IoU score for patient 100328 is : 0.000
+3D_HD score for patient 100328 is : 390.2178878524151
+
+3D_DICE score for patient 100335 is : 0.086
+3D_IoU score for patient 100335 is : 0.045
+3D_HD score for patient 100335 is : 289.8499611868182
+
+3D_DICE score for patient 100339 is : 0.011
+3D_IoU score for patient 100339 is : 0.005
+3D_HD score for patient 100339 is : 245.7051078020154
+
+3D_DICE score for patient 100344 is : 0.042
+3D_IoU score for patient 100344 is : 0.021
+3D_HD score for patient 100344 is : 307.9642836434121
+
+3D_DICE score for patient 100345 is : 0.005
+3D_IoU score for patient 100345 is : 0.002
+3D_HD score for patient 100345 is : 202.5660386145713
+
+3D_DICE score for patient 100347 is : 0.000
+3D_IoU score for patient 100347 is : 0.000
+3D_HD score for patient 100347 is : 388.83544077154284
+
+3D_DICE score for patient 100351 is : 0.000
+3D_IoU score for patient 100351 is : 0.000
+3D_HD score for patient 100351 is : 240.27900449269387
+
+3D_DICE score for patient 100355 is : 0.000
+3D_IoU score for patient 100355 is : 0.000
+3D_HD score for patient 100355 is : 248.41296262473904
+
+3D_DICE score for patient 100356 is : 0.009
+3D_IoU score for patient 100356 is : 0.005
+3D_HD score for patient 100356 is : 249.32308356828895
+
+3D_DICE score for patient 100368 is : 0.032
+3D_IoU score for patient 100368 is : 0.016
+3D_HD score for patient 100368 is : 209.1387099510753
+
+3D_DICE score for patient 100369 is : 0.000
+3D_IoU score for patient 100369 is : 0.000
+3D_HD score for patient 100369 is : 398.6351715541417
+
+3D_DICE score for patient 100372 is : 0.008
+3D_IoU score for patient 100372 is : 0.004
+3D_HD score for patient 100372 is : 403.97648446413314
+
+3D_DICE score for patient 100373 is : 0.018
+3D_IoU score for patient 100373 is : 0.009
+3D_HD score for patient 100373 is : 239.63513932643517
+
+3D_DICE score for patient 100379 is : 0.005
+3D_IoU score for patient 100379 is : 0.003
+3D_HD score for patient 100379 is : 192.31744590650115
+
+3D_DICE score for patient 100381 is : 0.000
+3D_IoU score for patient 100381 is : 0.000
+3D_HD score for patient 100381 is : 398.43318134914415
+
+3D_DICE score for patient 100385 is : 0.005
+3D_IoU score for patient 100385 is : 0.002
+3D_HD score for patient 100385 is : 384.03385267447453
+
+3D_DICE score for patient 100386 is : 0.000
+3D_IoU score for patient 100386 is : 0.000
+3D_HD score for patient 100386 is : 218.87439320304236
+
+3D_DICE score for patient 100394 is : 0.005
+3D_IoU score for patient 100394 is : 0.003
+3D_HD score for patient 100394 is : 290.3256791949345
+
+3D_DICE score for patient 100397 is : 0.020
+3D_IoU score for patient 100397 is : 0.010
+3D_HD score for patient 100397 is : 174.20103329199858
+
+3D_DICE score for patient 100402 is : 0.000
+3D_IoU score for patient 100402 is : 0.000
+3D_HD score for patient 100402 is : 174.9085475327035
+
+3D_DICE score for patient 100403 is : 0.032
+3D_IoU score for patient 100403 is : 0.016
+3D_HD score for patient 100403 is : 176.24414883904657
+
+3D_DICE score for patient 100404 is : 0.000
+3D_IoU score for patient 100404 is : 0.000
+3D_HD score for patient 100404 is : 188.78029558192773
+
+3D_DICE score for patient 100405 is : 0.180
+3D_IoU score for patient 100405 is : 0.099
+3D_HD score for patient 100405 is : 473.0930141103333
+
+3D_DICE score for patient 100407 is : 0.000
+3D_IoU score for patient 100407 is : 0.000
+3D_HD score for patient 100407 is : 202.78313539345424
+
+3D_DICE score for patient 100409 is : 0.016
+3D_IoU score for patient 100409 is : 0.008
+3D_HD score for patient 100409 is : 491.29319148549166
+
+3D_DICE score for patient 100413 is : 0.001
+3D_IoU score for patient 100413 is : 0.000
+3D_HD score for patient 100413 is : 439.14120735817994
+
+3D_DICE score for patient 100416 is : 0.000
+3D_IoU score for patient 100416 is : 0.000
+3D_HD score for patient 100416 is : 291.28336718734903
+
+3D_DICE score for patient 100418 is : 0.021
+3D_IoU score for patient 100418 is : 0.011
+3D_HD score for patient 100418 is : 182.9371476764629
+
+3D_DICE score for patient 100419 is : 0.004
+3D_IoU score for patient 100419 is : 0.002
+3D_HD score for patient 100419 is : 212.06602745371546
+

@@ -16,6 +16,15 @@ This repository hosts the code and resources for the paper **"A Foundation Model
 - Nov. 22, 2024: We added negative prediction p-value example in inference_example_DICOM.ipynb
 - Nov. 18, 2024: BiomedParse is officially online in [*Nature Methods*](https://aka.ms/biomedparse-paper)!
 
+## Installation on windows
+Install visual stduo >v14 https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170
+
+Make sure that CUDA is of version 11.8 
+
+For some reason detectron2 is picky on win10 so install it manually https://github.com/Ikomia-dev/detectron2/commit/cf546cfdae29b1f032f58a7d0340140443ee0603#diff-60f61ab7a8d1910d86d9fda2261620314edcae5894d5aaa236b821c7256badd7
+
+Install manially MPI + SDK https://www.microsoft.com/en-us/download/details.aspx?id=57467 for mpi4py
+
 ## Installation
 ```sh
 git clone https://github.com/microsoft/BiomedParse.git
