@@ -118,6 +118,7 @@ xdecoder_data
 output
 results
 data
+biomedparse_datasets
 
 # biomedparse_eval_results.json
 .amlignore*
