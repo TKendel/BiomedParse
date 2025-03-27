@@ -204,4 +204,15 @@ def get_instances(mask):
             
     return ins_mask_filtered
     
-    
+
+
+def volume_trimmer(GT):
+    buffer = int(GT.shape[2] * 0.05)
+    non_zero = np.unique(np.where(GT>0)[2])
+
+    if non_zero.size == 0:
+        return None
+    else:
+        first, last = non_zero[0], non_zero[-1]
+
+        return GT[:, :, first-buffer : last+buffer]

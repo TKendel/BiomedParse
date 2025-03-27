@@ -8,7 +8,7 @@ from PIL import Image
 from torch.nn.functional import one_hot
 from matplotlib import pyplot as plt
 
-from inference_utils.processing_utils import read_nifti_only, process_intensity_image, resize_to_original
+from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
 
 
 DIR = 'data/CT/retrain/gt/'
@@ -25,9 +25,15 @@ for number in patient_numbers:
 
     assert image.shape == GT.shape
 
-    unique_labels = np.unique(GT)
+    trimmed_GT = volume_trimmer(GT)
+
+    if type(trimmed_GT) is None :
+        print(f"No label found for patient{number}")
+        continue        
+
+    unique_labels = np.unique(trimmed_GT)
     # One hot encode mask labels
-    label_one_hot = one_hot(torch.tensor(GT).long(), num_classes=-1)
+    label_one_hot = one_hot(torch.tensor(trimmed_GT).long(), num_classes=-1)
 
     for slice_iter in range(44, 45):
         # Save img slice
@@ -49,7 +55,7 @@ for number in patient_numbers:
 
         # Save separate label slice
         for label in label_dict.keys():
-            if label is 0 or label not in unique_labels: # Skip background
+            if label == 0 or label not in unique_labels or not np.any(label_one_hot[: ,: , slice_iter, label].numpy()): # Skip background
                 continue
             else:
                 im_label = resize_to_original(label_one_hot[: ,: , slice_iter, label].numpy(), w=1024, h=1024)
