@@ -14,7 +14,7 @@ def avg_metrics(lines):
 
 
 
-with open("metrics.txt", "r") as f:
+with open("metrics_baseline.txt", "r") as f:
     metrics_lines = f.readlines()
 
 DICE = metrics_lines[0::4]
@@ -28,4 +28,3 @@ HD_avg = avg_metrics(HD)
 print(f"DICE average over {len(DICE)} patiens is: {DICE_avg}")
 print(f"IoU average over {len(IoU)} patiens is: {IoU_avg}")
 print(f"HD average over {len(HD)} patiens is: {HD_avg}")
-
