@@ -119,6 +119,8 @@ output
 results
 data
 biomedparse_datasets
+biomedparse_datasets_CT
+
 
 # biomedparse_eval_results.json
 .amlignore*
