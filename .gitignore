@@ -111,6 +111,7 @@ Config/*
 ./demo_code/*.pth
 *.pt
 *.pth
+utils
 
 
 # datasets
