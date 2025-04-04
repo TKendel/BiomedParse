@@ -121,7 +121,7 @@ results
 results_pub
 data
 biomedparse_datasets
-biomedparse_datasets_CT
+biomedparse_datasets_old
 
 
 # biomedparse_eval_results.json
