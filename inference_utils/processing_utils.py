@@ -128,7 +128,7 @@ def read_nifti_only(image_path):
     nii = nib.load(image_path)
     image_array = nii.get_fdata()
     
-    return image_array, nii.affine
+    return image_array, nii
 
 
 def resize_to_original(image, w, h):

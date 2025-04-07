@@ -11,6 +11,9 @@ from matplotlib import pyplot as plt
 from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
 
 
+'''
+TODO: Watch out how the mask and images are being sliced and saved, for traing it is not needed to train on background
+'''
 DIR = 'data/CT/train_mask'
 patient_numbers = [name[:6] for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]
 label_dict = {0: "background", 1: "pancreatic+tumor", 2: "pancreatic+veins", 3: "pancreatic+arteries", 4: "pancreas+parenchyma", 5: "pancreatic+duct", 6: "bile+duct"}
@@ -43,7 +46,7 @@ for number in patient_numbers:
         im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
         im = Image.fromarray(im)
         im = im.convert("L")
-        im.save(f"biomedparse_datasets/CT_pancreatic_cancer/train/{number}_{slice_iter}_CT_abdomen.png")
+        im.save(f"biomedparse_datasets_CT/CT_pancreatic_cancer/train/{number}_{slice_iter}_CT_abdomen.png")
 
         """
         TODO: this would be used to just have one mask of all the labels, however need to research if this would help or do the oposite
@@ -62,4 +65,6 @@ for number in patient_numbers:
                 continue
             else:
                 im_label = resize_to_original(label_one_hot[: ,: , slice_iter, label].numpy(), w=1024, h=1024)
-                plt.imsave(f"biomedparse_datasets/CT_pancreatic_cancer/train_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[label]}.png", im_label, cmap=cm.gray)
+                plt.imsave(f"biomedparse_datasets_CT/CT_pancreatic_cancer/train_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[label]}.png", im_label, cmap=cm.gray)
+
+    print(f"Done with patient file {number}.")
