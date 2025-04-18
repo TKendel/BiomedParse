@@ -30,8 +30,13 @@ print((np.unique(patient_numbers_mask)==np.unique(patient_numbers_img)).all())
 #     if p not in patient_numbers_mask:
 #         os.rename(f'biomedparse_datasets_CT\\CT_pancreatic_cancer\\train\\{p}_CT_abdomen.png', f'biomedparse_datasets_CT\\CT_pancreatic_cancer\\trash\\{p}_CT_abdomen.png')
 
-# patient_img = [name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]
-# patient_img = np.array(patient_img)
+patient_img = [name for name in os.listdir(DIR2) if os.path.isfile(os.path.join(DIR2, name))]
+patient_img = np.array(patient_img)
+print(patient_img)
+for pth in patient_img:
+    if "pancreas+tumor" in pth:
+        new_name = pth.replace("abdomen_pancreas+tumor", 'pancreas_tumor')
+        os.rename(f"biomedparse_datasets\\CT_pancreatic_cancer\\train_mask\\{pth}", f"biomedparse_datasets\\CT_pancreatic_cancer\\train_mask\\{new_name}") 
 # pancreatic+arteries, pancretic+veins,pacreatic+parenchyma
 
 
