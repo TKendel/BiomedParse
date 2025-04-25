@@ -170,6 +170,11 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         
     def init_train(self):
         self.mode = "train"
+        self.best_score = None
+        self.patience = 3
+        self.min_delta = 10
+        self.max_dice = 0
+        self.counter = 0
         logger.info('-------------------------------------------------------')
         logger.info("Training on rank: {}".format(self.opt['rank']))
 
@@ -221,11 +226,22 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"  Gradient Accumulation steps = {self.grad_acc_steps}")
             logger.info(f"  Total optimization steps = {self.opt['SOLVER']['MAX_NUM_EPOCHS'] * self.train_params['updates_per_epoch'] // self.grad_acc_steps}")
 
+    def early_stopping(self, mDice):
+        if mDice > self.max_dice:
+            self.max_dice = mDice
+            self.counter = 0
+        elif mDice < (self.max_dice + self.min_delta):
+            self.counter += 1
+            if self.counter >= self.patience:
+                return True
+        return False
+
     def train(self):
         """
         Training
         """
         self.init_train()
+        self.early_stopping_boolean = False
         current_optim_steps = self._get_and_validate_current_optim_steps()
         num_epochs = self.opt['SOLVER']['MAX_NUM_EPOCHS']
 
@@ -236,10 +252,18 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
 
         train_prev_logged_time = datetime.now()
         for epoch in range(self.train_params['start_epoch_idx'], num_epochs):
+            epoch_start_time = datetime.now()
+
+            if self.early_stopping_boolean:
+                logger.info(f"Patience has run out, stopping the traning!")
+                logger.info(f"This epoch takes {datetime.now() - epoch_start_time}")
+                logger.info(f"PROGRESS: {100.0 * (epoch + 1) / num_epochs:.2f}%")
+                logger.info(f"Config files are at {self.opt['conf_files']}")
+                break
+
             self.train_params['current_epoch_idx'] = epoch
             logger.info(f"Start epoch: {epoch} training.")
             
-            epoch_start_time = datetime.now()
             for batch_idx, batch in enumerate(self.train_dataloaders):
                 if self.train_params['current_epoch_idx'] == self.train_params['start_epoch_idx']:
                     if batch_idx < self.train_params['start_batch_idx']: # skip the first few batches for resuming
@@ -292,7 +316,9 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                 if batch_idx + 1 == self.train_params['updates_per_epoch']:
                     if self.opt.get('SAVE_CHECKPOINT', True):
                         self.save_checkpoint(self.train_params['num_updates'])
-                    results = self._eval_on_set(self.save_folder)
+                    results = self._eval_on_set(self.train_params['num_updates'], self.save_folder)
+                    if self.early_stopping(results):
+                        self.early_stopping_boolean = True
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
                     #     wandb.log(results)
                     break

@@ -111,6 +111,7 @@ class XDecoderPipeline:
     def evaluate_model(
         self,
         trainer: DefaultTrainer,
+        tag,
         save_folder,
     ) -> Tuple[Dict, Dict[str, float], bool]:
 
@@ -119,6 +120,8 @@ class XDecoderPipeline:
         dataset_names = self._opt['DATASETS']['TEST']
         scores = {}
         summary = {}
+
+        tag = str(tag).zfill(8)
 
         for dataset_label in dataset_names:
             torch.cuda.empty_cache()
@@ -196,18 +199,23 @@ class XDecoderPipeline:
             if is_main_process():
                 scores["{}/{}".format(dataset_label, eval_type)] = results
 
+        save_dir = os.path.join(self.save_folder, tag)
+
         # set back to training stat.
         model.model.sem_seg_head.num_classes = self._opt['MODEL']['ENCODER']['NUM_CLASSES']
         model.model.metadata = MetadataCatalog.get(self._opt['DATASETS']['TRAIN'][0])
         # save scores
         if is_main_process():
             model_name = self._opt['RESUME_FROM'].split('/')[-1].split('.')[0]
-            with open(os.path.join(save_folder,f'{model_name}_eval_results.json'), 'w') as f:
+            with open(os.path.join(save_dir, f'{model_name}_eval_results.json'), 'w') as f:
+                json.dump(scores, f, indent=4)
+            with open(os.path.join(save_folder, f'{model_name}_eval_results.json'), 'w') as f:
                 json.dump(scores, f, indent=4)
         # todo
         # hack to return only results/scores 
+        # Get mDice for early stopping comparission
         for datatype in scores:
             for evaltype in scores[datatype]:
                 if 'instance_results' in scores[datatype][evaltype]:
-                    scores[datatype][evaltype]= scores[datatype][evaltype]['scores']
+                    scores = scores[datatype][evaltype]['scores']['mDice']
         return scores
