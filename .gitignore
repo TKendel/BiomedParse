@@ -122,6 +122,7 @@ results_pub
 data
 biomedparse_datasets
 biomedparse_datasets_old
+organ_inference
 
 
 # biomedparse_eval_results.json
