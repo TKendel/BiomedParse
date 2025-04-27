@@ -79,14 +79,14 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         results = self._eval_on_set(self.save_folder)
         return results
 
-    def _eval_on_set(self, save_folder):
+    def _eval_on_set(self, tag, save_folder):
         logger.info(f"Evaluation start ...")
         if self.opt['FP16']:
             from torch.cuda.amp import autocast
             with autocast():
-                results = self.pipeline.evaluate_model(self, save_folder)
+                results = self.pipeline.evaluate_model(self, tag, save_folder)
         else:        
-            results = self.pipeline.evaluate_model(self, save_folder)
+            results = self.pipeline.evaluate_model(self, tag, save_folder)
         if self.opt['rank'] == 0:
             logger.info(results)
         return results

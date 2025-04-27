@@ -199,17 +199,13 @@ class XDecoderPipeline:
             if is_main_process():
                 scores["{}/{}".format(dataset_label, eval_type)] = results
 
-        save_dir = os.path.join(self.save_folder, tag)
-
         # set back to training stat.
         model.model.sem_seg_head.num_classes = self._opt['MODEL']['ENCODER']['NUM_CLASSES']
         model.model.metadata = MetadataCatalog.get(self._opt['DATASETS']['TRAIN'][0])
         # save scores
         if is_main_process():
             model_name = self._opt['RESUME_FROM'].split('/')[-1].split('.')[0]
-            with open(os.path.join(save_dir, f'{model_name}_eval_results.json'), 'w') as f:
-                json.dump(scores, f, indent=4)
-            with open(os.path.join(save_folder, f'{model_name}_eval_results.json'), 'w') as f:
+            with open(os.path.join(save_folder, f'{tag}{model_name}_eval_results.json'), 'w') as f:
                 json.dump(scores, f, indent=4)
         # todo
         # hack to return only results/scores 
