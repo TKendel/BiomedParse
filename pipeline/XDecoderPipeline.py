@@ -205,7 +205,7 @@ class XDecoderPipeline:
         # save scores
         if is_main_process():
             model_name = self._opt['RESUME_FROM'].split('/')[-1].split('.')[0]
-            with open(os.path.join(save_folder, f'{tag}{model_name}_eval_results.json'), 'w') as f:
+            with open(os.path.join(save_folder, f'{tag}_{model_name}_eval_results.json'), 'w') as f:
                 json.dump(scores, f, indent=4)
         # todo
         # hack to return only results/scores 
