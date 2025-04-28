@@ -19,6 +19,8 @@ CUDA_VISIBLE_DEVICES=0 python entry.py train \
             TEST.BATCH_SIZE_TOTAL 1 \
             TRAIN.BATCH_SIZE_TOTAL 1 \
             TRAIN.BATCH_SIZE_PER_GPU 4 \
+            SOLVER.PATIENCE 5 \
+            SOLVER.DELTA 0 \
             SOLVER.MAX_NUM_EPOCHS 20 \
             SOLVER.BASE_LR 0.00001 \
             SOLVER.FIX_PARAM.backbone False \

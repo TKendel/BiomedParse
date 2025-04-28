@@ -171,8 +171,8 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
     def init_train(self):
         self.mode = "train"
         self.best_score = None
-        self.patience = 3
-        self.min_delta = 10
+        self.patience = self.opt['SOLVER']['PATIENCE']
+        self.min_delta = self.opt['SOLVER']['DELTA']
         self.max_dice = 0
         self.counter = 0
         logger.info('-------------------------------------------------------')
