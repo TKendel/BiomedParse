@@ -85,7 +85,7 @@ class Preprocessing:
         '''
         Apply CLAHE clipping to image 
         '''
-        clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        clahe = cv.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
         self.img = clahe.apply(self.img)
 
     def closing(self):

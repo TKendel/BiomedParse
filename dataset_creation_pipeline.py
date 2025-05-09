@@ -9,62 +9,62 @@ from torch.nn.functional import one_hot
 from matplotlib import pyplot as plt
 
 from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
-
+from preprocessing import Preprocessing
 
 '''
 TODO: Watch out how the mask and images are being sliced and saved, for traing it is not needed to train on background
 '''
-DIR = 'data/CT/train_mask'
+DIR = 'data\\CT\\retrain\\img' # Path to the nifty directory
 patient_numbers = [name[:6] for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]
-label_dict = {0: "background", 1: "pancreatic+tumor", 2: "pancreatic+veins", 3: "pancreatic+arteries", 4: "pancreas+parenchyma", 5: "pancreatic+duct", 6: "bile+duct"}
+label_dict = {0: "background", 1: "tumor", 2: "vessel", 3: "pancreas"}
+
 
 for number in patient_numbers:
-    img_path = f'data/CT/train/{number}_00001_0000.nii.gz'
-    GT_path = f'data/CT/train_mask/{number}_00001.nii.gz'
+    if number == '100000': # not usualy needded
+        img_path = f'data/CT/retrain/img/{number}_00001_0000.nii.gz'
+        GT_path = f'data/CT/retrain/gt/{number}_00001.nii.gz'
 
-    # The result predictions are soft, hence why he thresholds 0.5 to set make them 0-1
-    image, nii = read_nifti_only(img_path)
-    GT, nii = read_nifti_only(GT_path)
+        image, nii = read_nifti_only(img_path)
+        GT, nii = read_nifti_only(GT_path)
 
-    assert image.shape == GT.shape
+        assert image.shape == GT.shape
 
-    first, last = volume_trimmer(GT)
+        first, last = volume_trimmer(GT)
 
-    if first and last == 0 :
-        print(f"No label found for patient{number}")
-        continue     
+        if first and last == 0 :
+            print(f"No label found for patient{number}")
+            continue     
 
-    trimmed_GT = GT[:, :, first:last]
-    trimmed_image = image[:, :, first:last]    
+        trimmed_GT = GT[:, :, first:last]
+        trimmed_image = image[:, :, first:last]    
 
-    unique_labels = np.unique(trimmed_GT)
-    # One hot encode mask labels
-    label_one_hot = one_hot(torch.tensor(trimmed_GT).long(), num_classes=-1)
+        unique_labels = np.unique(trimmed_GT)
+        # One hot encode mask labels
+        label_one_hot = one_hot(torch.tensor(trimmed_GT).long(), num_classes=-1)
 
-    for slice_iter in range(trimmed_image.shape[2]):
-        # Save img slice
-        im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
-        im = Image.fromarray(im)
-        im = im.convert("L")
-        im.save(f"biomedparse_datasets_CT/CT_pancreatic_cancer/train/{number}_{slice_iter}_CT_abdomen.png")
+        for slice_iter in range(trimmed_image.shape[2]):
+            # Save img slice
+            "TODO: rename function to something more generic to avoid confusion"
+            im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
+            # pp = Preprocessing(trimmed_image[: ,: , slice_iter], 'test')
+            # pp.normalize()
+            # pp.CLAHEClipping()
+            im = Image.fromarray(pp.img)
+            im = im.convert("L")
+            im.save(f"biomedparse_datasets/CTPancreas/test/{number}_{slice_iter}_CT_abdomen.png")
 
-        """
-        TODO: this would be used to just have one mask of all the labels, however need to research if this would help or do the oposite
-        The mode can take multi modal masks but not sure if this is helping the model and if separate is better
-        """
-        # # Save label slice
-        # im_label = resize_to_original(GT[:, :, slice_iter], w=1024, h=1024)
-        # im_label = Image.fromarray((im_label * 255).astype(np.uint8))
-        # print(im_label)
-        # im_label = im_label.convert("L")
-        # im_label.save(f"biomedparse_datasets/CTPancreas/train_mask/{number}{slice_iter}_CT_abdomen_test.png")
+            # Save separate label slice
+            for label in unique_labels:
+                if label == 0 or not np.any(label_one_hot[: ,: , slice_iter, int(label)].numpy()): # Skip background
+                    continue
+                elif label == 2 or label == 3:
+                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[2]}.png", im_label, cmap=cm.gray)
+                elif label == 4:
+                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[3]}.png", im_label, cmap=cm.gray)
+                elif label == 1:
+                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[1]}.png", im_label, cmap=cm.gray)
 
-        # Save separate label slice
-        for label in label_dict.keys():
-            if label == 0 or label not in unique_labels or not np.any(label_one_hot[: ,: , slice_iter, label].numpy()): # Skip background
-                continue
-            else:
-                im_label = resize_to_original(label_one_hot[: ,: , slice_iter, label].numpy(), w=1024, h=1024)
-                plt.imsave(f"biomedparse_datasets_CT/CT_pancreatic_cancer/train_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[label]}.png", im_label, cmap=cm.gray)
-
-    print(f"Done with patient file {number}.")
+        print(f"Done with patient file {number}.")
