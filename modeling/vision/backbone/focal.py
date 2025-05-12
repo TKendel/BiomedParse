@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-from peft import LoraConfig, get_peft_model
+from functools import partial
 
 from detectron2.utils.file_io import PathManager
 from detectron2.modeling import BACKBONE_REGISTRY, Backbone, ShapeSpec
@@ -22,14 +22,28 @@ from .build import register_backbone
 
 logger = logging.getLogger(__name__)
 
-lora_config = LoraConfig(
-    r=8,
-    lora_alpha=16,
-    lora_dropout=0.05,
-    target_modules=["f", "proj"],
-    bias="none",
-    task_type="FEATURE_EXTRACTION"
-)
+class LoRALayer(nn.Module):
+    def __init__(self, dim, rank, alpha, focal_level):
+        super().__init__()
+        std_dev = 1 / torch.sqrt(torch.tensor(rank).float())
+        self.A = nn.Parameter(torch.randn(dim, rank) * std_dev)
+        self.B = nn.Parameter(torch.zeros(rank, 2*dim+(focal_level+1)))
+        self.alpha = alpha
+
+    def forward(self, x):
+        x = self.alpha * (x @ self.A @ self.B)
+        return x
+
+class LinearWithLoRA(nn.Module):
+    def __init__(self, linear, dim, rank, alpha, focal_level):
+        super().__init__()
+        self.linear = linear
+        self.lora = LoRALayer(
+            dim, rank, alpha, focal_level
+        )
+
+    def forward(self, x):
+        return self.linear(x) + self.lora(x)
 
 class Mlp(nn.Module):
     """ Multilayer perceptron."""
@@ -74,9 +88,16 @@ class FocalModulation(nn.Module):
         self.focal_factor = focal_factor
         self.use_postln_in_modulation = use_postln_in_modulation
         self.scaling_modulator = scaling_modulator
+        self.lora_r = 8
+        self.lora_alpha = 16
+        # self.assign_lora = partial(LinearWithLoRA, rank=self.lora_r, alpha = self.lora_alpha, focal_level=self.focal_level)    
 
         self.f = nn.Linear(dim, 2*dim+(self.focal_level+1), bias=True)
         self.h = nn.Conv2d(dim, dim, kernel_size=1, stride=1, padding=0, groups=1, bias=True)
+
+        # LoRA components for self.f
+        self.f_lora_A = nn.Linear(dim, self.lora_r, bias=False)
+        self.f_lora_B = nn.Linear(self.lora_r, 2*dim+(self.focal_level+1), bias=False)
 
         self.act = nn.GELU()
         self.proj = nn.Linear(dim, dim)
@@ -103,10 +124,9 @@ class FocalModulation(nn.Module):
             x: input features with shape of (B, H, W, C)
         """
         B, nH, nW, C = x.shape
-        x = self.f(x)
+        x = self.f(x) + self.f_lora_B(self.f_lora_A(x))
         x = x.permute(0, 3, 1, 2).contiguous()
         q, ctx, gates = torch.split(x, (C, C, self.focal_level+1), 1)
-        
         ctx_all = 0
         for l in range(self.focal_level):                     
             ctx = self.focal_layers[l](ctx)
@@ -155,9 +175,9 @@ class FocalModulationBlock(nn.Module):
         self.use_layerscale = use_layerscale
 
         self.norm1 = norm_layer(dim)
-        self.modulation = get_peft_model(FocalModulation(
+        self.modulation = FocalModulation(
             dim, focal_window=self.focal_window, focal_level=self.focal_level, proj_drop=drop, use_postln_in_modulation=use_postln_in_modulation, scaling_modulator=scaling_modulator
-        ), lora_config)         
+        )
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
