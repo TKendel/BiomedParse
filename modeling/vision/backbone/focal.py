@@ -77,7 +77,7 @@ class FocalModulation(nn.Module):
         use_postln (bool, default=False): Whether use post-modulation layernorm
     """
 
-    def __init__(self, dim, proj_drop=0., focal_level=2, focal_window=7, focal_factor=2, use_postln=False, use_postln_in_modulation=False, scaling_modulator=False):
+    def __init__(self, dim, proj_drop=0., focal_level=2, focal_window=7, focal_factor=2, use_postln=False, use_postln_in_modulation=False, scaling_modulator=False, lora_rank=1, lora_alpha=1):
 
         super().__init__()
         self.dim = dim
@@ -88,16 +88,16 @@ class FocalModulation(nn.Module):
         self.focal_factor = focal_factor
         self.use_postln_in_modulation = use_postln_in_modulation
         self.scaling_modulator = scaling_modulator
-        self.lora_r = 8
-        self.lora_alpha = 16
+        self.lora_rank = lora_rank
+        self.lora_alpha = lora_alpha
         # self.assign_lora = partial(LinearWithLoRA, rank=self.lora_r, alpha = self.lora_alpha, focal_level=self.focal_level)    
 
         self.f = nn.Linear(dim, 2*dim+(self.focal_level+1), bias=True)
         self.h = nn.Conv2d(dim, dim, kernel_size=1, stride=1, padding=0, groups=1, bias=True)
 
         # LoRA components for self.f
-        self.f_lora_A = nn.Linear(dim, self.lora_r, bias=False)
-        self.f_lora_B = nn.Linear(self.lora_r, 2*dim+(self.focal_level+1), bias=False)
+        self.f_lora_A = nn.Linear(dim, self.lora_rank, bias=False)
+        self.f_lora_B = nn.Linear(self.lora_rank, 2*dim+(self.focal_level+1), bias=False)
 
         self.act = nn.GELU()
         self.proj = nn.Linear(dim, dim)
@@ -124,7 +124,7 @@ class FocalModulation(nn.Module):
             x: input features with shape of (B, H, W, C)
         """
         B, nH, nW, C = x.shape
-        x = self.f(x) + self.f_lora_B(self.f_lora_A(x))
+        x = self.f(x) + (self.lora_alpha * self.f_lora_B(self.f_lora_A(x)))
         x = x.permute(0, 3, 1, 2).contiguous()
         q, ctx, gates = torch.split(x, (C, C, self.focal_level+1), 1)
         ctx_all = 0
@@ -165,7 +165,7 @@ class FocalModulationBlock(nn.Module):
                  use_postln=False, use_postln_in_modulation=False,
                  scaling_modulator=False, 
                  use_layerscale=False, 
-                 layerscale_value=1e-4):
+                 layerscale_value=1e-4, lora_rank=1, lora_alpha=1):
         super().__init__()
         self.dim = dim
         self.mlp_ratio = mlp_ratio
@@ -176,7 +176,7 @@ class FocalModulationBlock(nn.Module):
 
         self.norm1 = norm_layer(dim)
         self.modulation = FocalModulation(
-            dim, focal_window=self.focal_window, focal_level=self.focal_level, proj_drop=drop, use_postln_in_modulation=use_postln_in_modulation, scaling_modulator=scaling_modulator
+            dim, focal_window=self.focal_window, focal_level=self.focal_level, proj_drop=drop, use_postln_in_modulation=use_postln_in_modulation, scaling_modulator=scaling_modulator, lora_rank=lora_rank, lora_alpha=lora_alpha
         )
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
@@ -240,7 +240,7 @@ class BasicLayer(nn.Module):
         use_conv_embed (bool): Use overlapped convolution for patch embedding or now. Default: False
         use_checkpoint (bool): Whether to use checkpointing to save memory. Default: False
     """
-
+    """TODO: Update documentation for adding additonal vars for lora"""
     def __init__(self,
                  dim,
                  depth,
@@ -248,6 +248,8 @@ class BasicLayer(nn.Module):
                  drop=0.,
                  drop_path=0.,
                  norm_layer=nn.LayerNorm,
+                 lora_rank=1,
+                 lora_alpha=1,
                  downsample=None,
                  focal_window=9, 
                  focal_level=2, 
@@ -275,7 +277,9 @@ class BasicLayer(nn.Module):
                 use_postln_in_modulation=use_postln_in_modulation, 
                 scaling_modulator=scaling_modulator,
                 use_layerscale=use_layerscale, 
-                norm_layer=norm_layer)
+                norm_layer=norm_layer,
+                lora_rank=lora_rank,
+                lora_alpha=lora_alpha)
             for i in range(depth)])
 
         # patch merging layer
@@ -404,6 +408,8 @@ class FocalNet(nn.Module):
                  patch_norm=True,
                  out_indices=[0, 1, 2, 3],
                  frozen_stages=-1,
+                 lora_rank = 1,
+                 lora_alpha = 1,
                  focal_levels=[2,2,2,2], 
                  focal_windows=[9,9,9,9],
                  use_conv_embed=False, 
@@ -443,6 +449,8 @@ class FocalNet(nn.Module):
                 drop=drop_rate,
                 drop_path=dpr[sum(depths[:i_layer]):sum(depths[:i_layer + 1])],
                 norm_layer=norm_layer,
+                lora_rank=lora_rank,
+                lora_alpha=lora_alpha,
                 downsample=PatchEmbed if (i_layer < self.num_layers - 1) else None,
                 focal_window=focal_windows[i_layer], 
                 focal_level=focal_levels[i_layer], 
@@ -634,10 +642,12 @@ class D2FocalNet(FocalNet, Backbone):
         embed_dim = cfg['BACKBONE']['FOCAL']['EMBED_DIM']
         depths = cfg['BACKBONE']['FOCAL']['DEPTHS']
         mlp_ratio = cfg['BACKBONE']['FOCAL']['MLP_RATIO']
-        frozen_stages = cfg['BACKBONE']['FOCAL']['FROZEN_STAGES']
         drop_rate = cfg['BACKBONE']['FOCAL']['DROP_RATE']
         drop_path_rate = cfg['BACKBONE']['FOCAL']['DROP_PATH_RATE']
         norm_layer = nn.LayerNorm
+        frozen_stages = cfg['BACKBONE']['FOCAL']['FROZEN_STAGES']
+        lora_rank = cfg['BACKBONE']['FOCAL']['LORA_RANK']
+        lora_alpha = cfg['BACKBONE']['FOCAL']['LORA_ALPHA']
         patch_norm = cfg['BACKBONE']['FOCAL']['PATCH_NORM']
         use_checkpoint = cfg['BACKBONE']['FOCAL']['USE_CHECKPOINT']
         out_indices = cfg['BACKBONE']['FOCAL']['OUT_INDICES']
@@ -656,6 +666,8 @@ class D2FocalNet(FocalNet, Backbone):
             patch_norm,
             out_indices,
             frozen_stages,
+            lora_rank,
+            lora_alpha,
             focal_levels=cfg['BACKBONE']['FOCAL']['FOCAL_LEVELS'],
             focal_windows=cfg['BACKBONE']['FOCAL']['FOCAL_WINDOWS'],   
             use_conv_embed=cfg['BACKBONE']['FOCAL']['USE_CONV_EMBED'],    
