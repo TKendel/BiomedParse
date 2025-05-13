@@ -71,6 +71,7 @@ MODEL:
       FOCAL_WINDOWS: [3, 3, 3, 3]
       DROP_PATH_RATE: 0.3
       MLP_RATIO: 4.0
+      FROZEN_STAGES: -1
       DROP_RATE: 0.0
       PATCH_NORM: True
       USE_CONV_EMBED: True

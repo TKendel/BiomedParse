@@ -634,6 +634,7 @@ class D2FocalNet(FocalNet, Backbone):
         embed_dim = cfg['BACKBONE']['FOCAL']['EMBED_DIM']
         depths = cfg['BACKBONE']['FOCAL']['DEPTHS']
         mlp_ratio = cfg['BACKBONE']['FOCAL']['MLP_RATIO']
+        frozen_stages = cfg['BACKBONE']['FOCAL']['FROZEN_STAGES']
         drop_rate = cfg['BACKBONE']['FOCAL']['DROP_RATE']
         drop_path_rate = cfg['BACKBONE']['FOCAL']['DROP_PATH_RATE']
         norm_layer = nn.LayerNorm
@@ -654,6 +655,7 @@ class D2FocalNet(FocalNet, Backbone):
             norm_layer,
             patch_norm,
             out_indices,
+            frozen_stages,
             focal_levels=cfg['BACKBONE']['FOCAL']['FOCAL_LEVELS'],
             focal_windows=cfg['BACKBONE']['FOCAL']['FOCAL_WINDOWS'],   
             use_conv_embed=cfg['BACKBONE']['FOCAL']['USE_CONV_EMBED'],    
