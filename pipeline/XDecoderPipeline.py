@@ -213,5 +213,18 @@ class XDecoderPipeline:
         for datatype in scores:
             for evaltype in scores[datatype]:
                 if 'instance_results' in scores[datatype][evaltype]:
-                    scores = scores[datatype][evaltype]['scores']['mDice']
-        return scores
+                    mDice = scores[datatype][evaltype]['scores']['mDice']
+
+        for datatype in scores:
+            for evaltype in scores[datatype]:
+                if 'instance_results' in scores[datatype][evaltype]:
+                    results = scores[datatype][evaltype]['instance_results']
+
+        val_dices = []
+        for i in range (len(results)):
+            if 'tumor' in results[i]['metadata']['grounding_info'][0]['mask_file']:
+                val_dices.append(results[i]['Dice'][0])
+
+        print(sum(val_dices)/len(val_dices))
+
+        return sum(val_dices)/len(val_dices)
