@@ -276,3 +276,5 @@ def eval_CT():
                 f.write("\n")
 
         print(f"Patient {patient} done!")
+
+dataset_creation_pipeline('data/AUMC/')
