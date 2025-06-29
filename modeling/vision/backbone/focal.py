@@ -24,19 +24,36 @@ logger = logging.getLogger(__name__)
 class Mlp(nn.Module):
     """ Multilayer perceptron."""
 
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
+    def __init__(self, in_features, lora_rank, lora_alpha, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
         self.fc1 = nn.Linear(in_features, hidden_features)
+        # # LoRA components for self.f
+        # self.f_lora_A_1 = nn.Linear(in_features, lora_rank, bias=False)
+        # self.f_lora_B_1 = nn.Linear(lora_rank, hidden_features, bias=False)
+
         self.act = act_layer()
         self.fc2 = nn.Linear(hidden_features, out_features)
+        # # LoRA components for self.f
+        # self.f_lora_A_2 = nn.Linear(hidden_features, lora_rank, bias=False)
+        # self.f_lora_B_2 = nn.Linear(lora_rank, out_features, bias=False)
         self.drop = nn.Dropout(drop)
 
+        # # Most implementations also include some dropout
+        # self.dropout = nn.Dropout(p=0.2)
+
+        # self.lora_rank = lora_rank
+        # self.lora_alpha = lora_alpha
+
     def forward(self, x):
+        # lora_out =  self.f_lora_B_1(self.f_lora_A_1(self.dropout(x)))
+        # x = self.fc1(x) + (self.lora_alpha / self.lora_rank) * lora_out
         x = self.fc1(x)
         x = self.act(x)
         x = self.drop(x)
+        # lora_out =  self.f_lora_B_2(self.f_lora_A_2(self.dropout(x)))
+        # x = self.fc2(x) + (self.lora_alpha / self.lora_rank) * lora_out
         x = self.fc2(x)
         x = self.drop(x)
         return x
@@ -144,7 +161,7 @@ class FocalModulationBlock(nn.Module):
                  use_postln=False, use_postln_in_modulation=False,
                  scaling_modulator=False, 
                  use_layerscale=False, 
-                 layerscale_value=1e-4, lora_rank=1, lora_alpha=1):
+                 layerscale_value=1e-4, lora_rank=1, lora_alpha=0):
         super().__init__()
         self.dim = dim
         self.mlp_ratio = mlp_ratio
@@ -161,7 +178,7 @@ class FocalModulationBlock(nn.Module):
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
         mlp_hidden_dim = int(dim * mlp_ratio)
-        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        self.mlp = Mlp(in_features=dim, lora_rank=lora_rank, lora_alpha=lora_alpha, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         self.H = None
         self.W = None
@@ -228,7 +245,7 @@ class BasicLayer(nn.Module):
                  drop_path=0.,
                  norm_layer=nn.LayerNorm,
                  lora_rank=1,
-                 lora_alpha=1,
+                 lora_alpha=0,
                  downsample=None,
                  focal_window=9, 
                  focal_level=2, 
@@ -388,7 +405,7 @@ class FocalNet(nn.Module):
                  out_indices=[0, 1, 2, 3],
                  frozen_stages=-1,
                  lora_rank = 1,
-                 lora_alpha = 1,
+                 lora_alpha = 0,
                  focal_levels=[2,2,2,2], 
                  focal_windows=[9,9,9,9],
                  use_conv_embed=False, 

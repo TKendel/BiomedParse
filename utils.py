@@ -5,8 +5,8 @@ import seaborn as sbn
 import matplotlib.pyplot as plt
 import json
 import torch
-import glob
 import matplotlib.cm as cm
+import torch.nn.functional as F
 
 from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
@@ -17,8 +17,6 @@ from inference_utils.output_processing import dice_volume, iou_volume, hausdorff
 from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
 
 
-
-"TODO: CITE THESE HELPFUL BUNCH"
 from dcmrtstruct2nii import dcmrtstruct2nii, list_rt_structs
 
 
@@ -185,79 +183,98 @@ def create_dataset_PANORAMA(DIR):
 
 
 def eval_MRI(DIR):
-    # directories = os.listdir(DIR)
+    directories = os.listdir(DIR)
 
-    PDAC_patients = ['001', '012', '016', '021', '046', '047', '061', '069']
+    # PDAC_patients = ['001', '012', '016', '021', '046', '047', '061', '069']
 
-    for directory in PDAC_patients:
-        sub_directories = os.listdir(f"{DIR}{directory}")
-        for sub_directory in sub_directories:
-            files = os.listdir(f"{DIR}{directory}\\{sub_directory}")
-            img = None
-            for file in files:
-                if 'mask_GTV' in file:
-                    img = file
-                    img_paths = f'{DIR}{directory}\\{sub_directory}\\{img}'
+    for directory in directories:
+        # sub_directories = os.listdir(f"{DIR}{directory}")
+        # for sub_directory in sub_directories:
+        #     files = os.listdir(f"{DIR}{directory}\\{sub_directory}")
+        #     img = None
+        #     for file in files:
+        #         if 'mask_GTV' in file:
+        #             img = file
+        #             img_paths = f'{DIR}{directory}\\{sub_directory}\\{img}'
 
-                    for img_path in glob.iglob(img_paths):
+        #             for img_path in glob.iglob(img_paths):
 
-                        # path_label = f'data//CT//gt//{patient}_00001.nii.gz'
-                        gt, nii = read_nifti_only(img_path)
+        img_path = f'{DIR}{directory}'
+        gt, nii = read_nifti_only(img_path)
 
-                        gt = gt.astype(float) / 255
-                        gt = torch.tensor(gt)
+        # gt = gt.astype(float) / 255
+        gt = torch.tensor(gt)
 
-                        # One hot encode multiple classes
-                        unique_labels = np.unique(gt)
+        # One hot encode multiple classes
+        unique_labels = np.unique(gt)
 
-                        first, last = volume_trimmer(gt)
-                        gt = gt[:,:,first:last]
+        first, last = volume_trimmer(gt)
 
-                        path_pred = f'results_pub\\AUMC\\MRI_patient_{sub_directory}_base.nii.gz'
-                        pred, nii = read_nifti_only(path_pred)
+        buffer_1 = int(gt.shape[2] * 0.02)
 
-                        pred = pred[:, :, first:last]
-                        pred = torch.tensor(pred)
+        gt = gt[:,:,first-buffer_1:last+buffer_1]
+        
+        print(directory)
+        path_pred = f'MRI_BASELINE\MRI_patient_{directory[9:12]}_baseline.nii.gz'
+        pred, nii = read_nifti_only(path_pred)
 
-                        # 1 is currently PDAC lessions, watch out for which label we are calculating
-                        if 1 not in unique_labels:
-                            continue
-                        else:
-                            dice = dice_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
-                            iou = iou_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
-                            hausdorff = hausdorff_distance_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
 
-                            with open("metrics_MRI_base.txt", "a") as f:
-                                f.write(f"3D_DICE score for patient {sub_directory} is : {dice}\n")
-                                f.write(f"3D_IoU score for patient {sub_directory} is : {iou}\n")
-                                f.write(f"3D_HD score for patient {sub_directory} is : {hausdorff}\n")
-                                f.write("\n")
+        pred = pred[:, :, first-buffer_1:last+buffer_1]
+        pred = torch.tensor(pred)
 
-                        print(f"Patient {sub_directory} done!")
+        # Buffer space to capture the possible PDAC
 
-def eval_CT():
-    PDAC_patients = [100002, 100005, 100011, 100030, 100033, 100043, 100050, 100060, 100074, 100082, 100091, 100096, 100101, 100102, 100124, 100127, 100134]
+        # buffer_2 = int(gt.shape[2] * 0.02)
 
+        print(unique_labels)
+
+        # 1 is currently PDAC lessions, watch out for which label we are calculating
+        if 1 not in unique_labels:
+            continue
+        else:
+            dice = dice_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
+            iou = iou_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
+            hausdorff = hausdorff_distance_volume(torch.permute(gt, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
+
+            with open("metrics_MRI_baseline.txt", "a") as f:
+                f.write(f"3D_DICE score for patient {directory[9:12]} is : {dice}\n")
+                f.write(f"3D_IoU score for patient {directory[9:12]} is : {iou}\n")
+                f.write(f"3D_HD score for patient {directory[9:12]} is : {hausdorff}\n")
+                f.write("\n")
+
+        print(f"Patient {directory[9:12]} done!")
+
+def eval_CT(DIR):
+    f = open('patients.json')
+    data = json.load(f)
+
+    PDAC_patients = data['patients']
+    PDAC_patients = [100002, 100005, 100011, 100030, 100033, 100043, 100050, 100060, 100074, 100082, 100091, 100096, 100101, 100102, 100124, 100127, 100134,  100143, 100144, 100150]
+    i = 0
     for patient in PDAC_patients:
+        
+        if i ==50:
+            break
 
-        path_label = f'data//CT//gt//{patient}_00001.nii.gz'
+        path_label = f'data\CT\gt\{patient}_00001.nii.gz'
         label, nii = read_nifti_only(path_label)
 
         # One hot encode multiple classes
         unique_labels = np.unique(label)
 
-        buffer = int(label.shape[2] * 0.05)
-
         label_one_hot = F.one_hot(torch.tensor(label).long(), num_classes=-1)
 
         label_one_hot = label_one_hot[:, :, :, 1]
         first, last = volume_trimmer(label_one_hot)
-        label_one_hot = label_one_hot[:,:,first:last]
+        buffer_1 = int(label.shape[2] * 0.02)
 
-        path_pred = f'results_pub//CT_patient_{patient}_LR=-5,b=2,fullv2.nii.gz'
+        label_one_hot = label_one_hot[:,:,first-buffer_1:last+buffer_1]
+
+        # path_pred = f'CT_FULL_OUTPUT\CT_patient_PDAC_{patient}_0_updated_BM.nii.gz'
+        path_pred = f'results_pub\CT_patient_{patient}_0_prompt_11.nii.gz'
         pred, nii = read_nifti_only(path_pred)
 
-        pred = pred[:, :, first:last]
+        pred = pred[:,:,first-buffer_1:last+buffer_1]
         pred = torch.tensor(pred)
 
 
@@ -269,12 +286,16 @@ def eval_CT():
             iou = iou_volume(torch.permute(label_one_hot, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
             hausdorff = hausdorff_distance_volume(torch.permute(label_one_hot, (2, 0, 1)), torch.permute(pred, (2, 0, 1)))
 
-            with open("metrics_full_dataset_v2.txt", "a") as f:
+            with open("prompt_1.txt", "a") as f:
                 f.write(f"3D_DICE score for patient {patient} is : {dice}\n")
                 f.write(f"3D_IoU score for patient {patient} is : {iou}\n")
                 f.write(f"3D_HD score for patient {patient} is : {hausdorff}\n")
                 f.write("\n")
-
+        i+=1
         print(f"Patient {patient} done!")
 
-dataset_creation_pipeline('data/AUMC/')
+
+
+# DIR = 'data\CT\gt'
+DIR = '..\\nnUNet\\nnUNet_raw\Dataset200_PDAC\labelsTs\\'
+eval_MRI(DIR)

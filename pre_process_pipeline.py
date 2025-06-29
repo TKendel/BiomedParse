@@ -44,53 +44,53 @@ idx = 350
 # works: 33, 11 , 30, 134, 60
 #kinda works: 50, 102
 # does not works: 5, 2 28,43,74,82,91,96,101,124
-path = 'data\\CT\\img\\'
-for subdir, dirs, files in os.walk(path):
-    for file in files:
-        for p in PDAC_patients:
-            if str(p) in file:
-                pred, nii = read_nifti_only(path+file)
-                ground_img, _ = read_nifti_only("examples/amos_0328.nii.gz")
-                isoscale_resolution = nii.header['pixdim'][1:4]
-                isoscale_resolution_gt = _.header['pixdim'][1:4]
-                print(isoscale_resolution)
-                print(isoscale_resolution_gt)
-                # process image with intensity range 0.5-99.5 percentile
-                # lower_bound, upper_bound = np.percentile(pred[pred > -1200], 0.1), np.percentile(pred, 99.5)
+# path = 'data\\CT\\img\\'
+# for subdir, dirs, files in os.walk(path):
+#     for file in files:
+#         for p in PDAC_patients:
+#             if str(p) in file:
+#                 pred, nii = read_nifti_only(path+file)
+#                 ground_img, _ = read_nifti_only("examples/amos_0328.nii.gz")
+#                 isoscale_resolution = nii.header['pixdim'][1:4]
+#                 isoscale_resolution_gt = _.header['pixdim'][1:4]
+#                 print(isoscale_resolution)
+#                 print(isoscale_resolution_gt)
+#                 # process image with intensity range 0.5-99.5 percentile
+#                 # lower_bound, upper_bound = np.percentile(pred[pred > -1200], 0.1), np.percentile(pred, 99.5)
                 
-                # image_data_pre = np.clip(pred, lower_bound, upper_bound)
+#                 # image_data_pre = np.clip(pred, lower_bound, upper_bound)
 
-                # plot_histogram(ground_img, "examples/amos_0328.nii.gz")
-                # plot_histogram(pred, file)
-                # plt.legend()
-                # plt.show()
-            # aa = do_interpolate(pred, isoscale_resolution)
+#                 # plot_histogram(ground_img, "examples/amos_0328.nii.gz")
+#                 # plot_histogram(pred, file)
+#                 # plt.legend()
+#                 # plt.show()
+#             # aa = do_interpolate(pred, isoscale_resolution)
 
-        # proj = interval_mapping(pred, -150, 250, 0, 1)
+#         # proj = interval_mapping(pred, -150, 250, 0, 1)
 
         
-        # img = cv2.imread(path+file)
+#         # img = cv2.imread(path+file)
 
-                pp = Preprocessing(pred[:,:,idx], path+file)
-                pp.normalize()
-        # pp.gammaCorrection(0.5)
-        # pp.adaptiveEqualize()
-                pp.CLAHEClipping()
-        # pp.bilateralFilter()
-        # pp.equalize()
-        # pp.bilateralFilter()
+#                 pp = Preprocessing(pred[:,:,idx], path+file)
+#                 pp.normalize()
+#         # pp.gammaCorrection(0.5)
+#         # pp.adaptiveEqualize()
+#                 pp.CLAHEClipping()
+#         # pp.bilateralFilter()
+#         # pp.equalize()
+#         # pp.bilateralFilter()
 
-        # pp.logCorrection(1.1)
+#         # pp.logCorrection(1.1)
 
-        # pp.histogramMatching(ground_img[68])
+#         # pp.histogramMatching(ground_img[68])
 
-                pred[:,:, idx] = pp.img
+#                 pred[:,:, idx] = pp.img
         
-        # pp.save()
-            # image_data_pre = np.rot90(image_data_pre, 2)
+#         # pp.save()
+#             # image_data_pre = np.rot90(image_data_pre, 2)
 
-                final_img = nib.Nifti1Image(pred, nii.affine)
-                nib.save(final_img, f'test2.nii.gz')
+#                 final_img = nib.Nifti1Image(pred, nii.affine)
+#                 nib.save(final_img, f'test2.nii.gz')
 
 
 """
@@ -98,5 +98,13 @@ Rotation does nothing, clipping the histogram values so it matches the atoms dat
 
 CLAHE helps on some scans like 28,5 60 but not on scans like 43 74
 """
+
+
+# DIR = 'data\AUMC\\001\\001-0\image.nii.gz'
+# pred, nii = read_nifti_only(DIR)
+
+# imgplot = plt.imshow(pred[:,:, 40],cmap='gray')
+# print()
+# plt.show()
 
 

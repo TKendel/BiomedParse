@@ -26,6 +26,7 @@ def process_intensity_image(image_data, is_CT, site=None):
     # image_data: 2D numpy array of shape (H, W)
     
     # return: 3-channel numpy array of shape (H, W, 3) as model input
+
     
     if is_CT:
         # process image with windowing
@@ -34,6 +35,7 @@ def process_intensity_image(image_data, is_CT, site=None):
         else:
             raise ValueError(f'Please choose CT site from {CT_WINDOWS.keys()}')
         lower_bound, upper_bound = window
+
     else:
         # process image with intensity range 0.5-99.5 percentile
         lower_bound, upper_bound = np.percentile(
@@ -209,7 +211,6 @@ def get_instances(mask):
 def volume_trimmer(GT):
     # buffer = int(GT.shape[2] * 0.05)
     non_zero = np.unique(np.where(GT>0)[2])
-
     if non_zero.size == 0:
         return None
     else:
