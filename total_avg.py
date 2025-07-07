@@ -14,7 +14,7 @@ def avg_metrics(lines):
 
 
 
-with open("metrics_baseline.txt", "r") as f:
+with open("C:\\Users\Toni\Desktop\FINAL\FINAL\\MRI+CT_buffer.txt", "r") as f:
     metrics_lines = f.readlines()
 
 DICE = metrics_lines[0::4]

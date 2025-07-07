@@ -14,7 +14,7 @@ from pydicom import dcmread
 from torch.nn.functional import one_hot
 
 from inference_utils.output_processing import dice_volume, iou_volume, hausdorff_distance_volume
-from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
+from inference_utils.processing_utils import read_nifti_only, resize_image, volume_trimmer
 
 
 from dcmrtstruct2nii import dcmrtstruct2nii, list_rt_structs
@@ -58,7 +58,6 @@ def json_parser():
 
             if 'instance_results' in scores[datatype][evaltype]:
                 scores = scores[datatype][evaltype]['scores']['mDice']
-                # scores[datatype][evaltype]['scores'] = scores[datatype][evaltype]['scores']['mDice']
 
     print(scores)
 
@@ -108,21 +107,19 @@ def dataset_creation_pipeline(DIR):
 
                     for slice_iter in range(trimmed_image.shape[2]):
                         # Save img slice
-                        "TODO: rename function to something more generic to avoid confusion"
-                        im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
+                        im = resize_image(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
                         im = Image.fromarray(im)
                         im = ImageOps.grayscale(im)
-                        # im = im.convert("RGB")
                         im.save(f"biomedparse_datasets\AUMC\\train\\{sub_directory}_{slice_iter}_MRI_abdomen.png")
 
                         # Save separate label slice
                         print(trimmed_GT.shape)
                         for label in unique_labels:
                             if not np.any(trimmed_GT[: ,: , slice_iter]): # Skip background
-                                im_label = resize_to_original(trimmed_GT[: ,: , slice_iter], w=1024, h=1024)
+                                im_label = resize_image(trimmed_GT[: ,: , slice_iter], w=1024, h=1024)
                                 plt.imsave(f"biomedparse_datasets\AUMC\\train_mask\\{sub_directory}_{slice_iter}_MRI_abdomen_background.png", im_label, cmap=cm.gray)
                             else:
-                                im_label = resize_to_original(trimmed_GT[: ,: , slice_iter], w=1024, h=1024)
+                                im_label = resize_image(trimmed_GT[: ,: , slice_iter], w=1024, h=1024)
                                 plt.imsave(f"biomedparse_datasets\AUMC\\train_mask\\{sub_directory}_{slice_iter}_MRI_abdomen_tumor.png", im_label, cmap=cm.gray)
 
                     print(f"Done with patient file {directory}\\{sub_directory}\\{raw}.")
@@ -157,11 +154,7 @@ def create_dataset_PANORAMA(DIR):
 
             for slice_iter in range(trimmed_image.shape[2]):
                 # Save img slice
-                "TODO: rename function to something more generic to avoid confusion"
-                im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
-                # pp = Preprocessing(trimmed_image[: ,: , slice_iter], 'test')
-                # pp.normalize()
-                # pp.CLAHEClipping()
+                im = resize_image(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
                 im = Image.fromarray(im)
                 im = im.convert("L")
                 im.save(f"data\CT\cut_raw\{number}_{slice_iter}_CT_abdomen.png")
@@ -171,13 +164,13 @@ def create_dataset_PANORAMA(DIR):
                     if label == 0 or not np.any(label_one_hot[: ,: , slice_iter, int(label)].numpy()): # Skip background
                         continue
                     elif label == 2 or label == 3:
-                        im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                        im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                         plt.imsave(f"data/CT/cut_gt/{number}-{slice_iter}_CT_abdomen_{label_dict[2]}.png", im_label, cmap=cm.gray)
                     elif label == 4:
-                        im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                        im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                         plt.imsave(f"data/CT/cut_gt/{number}-{slice_iter}_CT_abdomen_{label_dict[3]}.png", im_label, cmap=cm.gray)
                     elif label == 1:
-                        im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                        im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                         plt.imsave(f"data/CT/cut_gt/{number}-{slice_iter}_CT_abdomen_{label_dict[1]}.png", im_label, cmap=cm.gray)
             print(f"Done with patient file {number}.")
 
@@ -185,7 +178,7 @@ def create_dataset_PANORAMA(DIR):
 def eval_MRI(DIR):
     directories = os.listdir(DIR)
 
-    # PDAC_patients = ['001', '012', '016', '021', '046', '047', '061', '069']
+    PDAC_patients = ['016',  '061', '069']
 
     for directory in directories:
         # sub_directories = os.listdir(f"{DIR}{directory}")
@@ -223,8 +216,7 @@ def eval_MRI(DIR):
         pred = torch.tensor(pred)
 
         # Buffer space to capture the possible PDAC
-
-        # buffer_2 = int(gt.shape[2] * 0.02)
+        buffer_2 = int(gt.shape[2] * 0.02)
 
         print(unique_labels)
 

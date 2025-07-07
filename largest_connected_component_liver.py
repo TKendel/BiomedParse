@@ -11,10 +11,10 @@ PDAC_patients = [100002, 100005, 100011, 100030, 100033, 100043, 100050, 100060,
 # PDAC_patients = [100091,100107,100138]
 
 for p in PDAC_patients:
-    img_paths = f'results\\CT_patient_liver_{p}.nii.gz'
+    img_paths = f'results\\CT_patient_kidney_{p}.nii.gz'
     results = []
     for img_path in glob.iglob(img_paths):
-        pred, nii_ = read_nifti_only(img_path)
+        pred, nii = read_nifti_only(img_path)
         pred = (pred > 0.5).astype(np.uint8)
         image, nii = read_nifti_only(f'data\\CT\\img\\{p}_00001_0000.nii.gz')
 
@@ -61,6 +61,8 @@ for p in PDAC_patients:
 
         buffer_1 = int(image.shape[2] * 0.08)
         buffer_2 = int(image.shape[2] * 0.07)
+        final_img = nib.Nifti1Image(pred, nii.affine)
+        nib.save(final_img, f'results\\CT_patient_pancreas_tumor_final_{p}.nii.gz')
 
         if sum(results) < 0:
             print("not flipped")

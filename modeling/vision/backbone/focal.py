@@ -70,7 +70,7 @@ class FocalModulation(nn.Module):
         use_postln (bool, default=False): Whether use post-modulation layernorm
     """
 
-    def __init__(self, dim, proj_drop=0., focal_level=2, focal_window=7, focal_factor=2, use_postln=False, use_postln_in_modulation=False, scaling_modulator=False, lora_rank=1, lora_alpha=1):
+    def __init__(self, dim, proj_drop=0., focal_level=2, focal_window=7, focal_factor=2, use_postln=False, use_postln_in_modulation=False, scaling_modulator=False, lora_rank=1, lora_alpha=0):
 
         super().__init__()
         self.dim = dim
@@ -230,13 +230,14 @@ class BasicLayer(nn.Module):
         drop (float, optional): Dropout rate. Default: 0.0
         drop_path (float | tuple[float], optional): Stochastic depth rate. Default: 0.0
         norm_layer (nn.Module, optional): Normalization layer. Default: nn.LayerNorm
+        lora_rank: rank size for LoRA matrix
+        lora_alpha: alpha size for LoRA matrix updates 
         downsample (nn.Module | None, optional): Downsample layer at the end of the layer. Default: None
         focal_level (int): Number of focal levels
         focal_window (int): Focal window size at focal level 1
         use_conv_embed (bool): Use overlapped convolution for patch embedding or now. Default: False
         use_checkpoint (bool): Whether to use checkpointing to save memory. Default: False
     """
-    """TODO: Update documentation for adding additonal vars for lora"""
     def __init__(self,
                  dim,
                  depth,
@@ -385,6 +386,8 @@ class FocalNet(nn.Module):
         out_indices (Sequence[int]): Output from which stages.
         frozen_stages (int): Stages to be frozen (stop grad and set eval mode).
             -1 means not freezing any parameters.
+        lora_rank: rank size for LoRA matrix
+        lora_alpha: alpha size for LoRA matrix updates 
         focal_levels (Sequence[int]): Number of focal levels at four stages
         focal_windows (Sequence[int]): Focal window sizes at first focal level at four stages
         use_conv_embed (bool): Whether use overlapped convolution for patch embedding

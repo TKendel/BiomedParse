@@ -73,7 +73,7 @@ MODEL:
       MLP_RATIO: 4.0
       FROZEN_STAGES: -1
       LORA_RANK: 1
-      LORA_ALPHA: 1
+      LORA_ALPHA: 0
       DROP_RATE: 0.0
       PATCH_NORM: True
       USE_CONV_EMBED: True
