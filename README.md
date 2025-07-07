@@ -55,6 +55,21 @@ Install dependencies
 ```sh
 pip install -r assets/requirements/requirements.txt
 ```
+## Some Additional Notes for setup
+clone biomed
+clone detectron
+install detectron
+
+create conda env following biomed 
+comment out detectron and mip from requirements.txt file
+
+pip install pytorch https://pytorch.org/
+pip install requirements.txt
+
+conda install anaconda::mpi4py
+
+pip instal nibabel dycom simplITK
+
 
 ## Dataset
 BiomedParseData was created from preprocessing publicly available biomedical image segmentation datasets. Check a subset of our processed datasets on HuggingFace: https://huggingface.co/datasets/microsoft/BiomedParseData. For the source datasets, please check the details here: [BiomedParseData](assets/readmes/DATASET.md). As a quick start, we've samples a tiny demo dataset at biomedparse_datasets/BiomedParseData-Demo
