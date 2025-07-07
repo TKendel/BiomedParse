@@ -8,11 +8,11 @@ from PIL import Image
 from torch.nn.functional import one_hot
 from matplotlib import pyplot as plt
 
-from inference_utils.processing_utils import read_nifti_only, resize_to_original, volume_trimmer
+from inference_utils.processing_utils import read_nifti_only, resize_image, volume_trimmer
 from preprocessing import Preprocessing
 
 '''
-TODO: Watch out how the mask and images are being sliced and saved, for traing it is not needed to train on background
+NOTE: Watch out how the mask and images are being sliced and saved, for traing it is not needed to train on background
 '''
 DIR = 'data\\CT\\retrain\\img' # Path to the nifty directory
 patient_numbers = [name[:6] for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]
@@ -44,11 +44,10 @@ for number in patient_numbers:
 
         for slice_iter in range(trimmed_image.shape[2]):
             # Save img slice
-            "TODO: rename function to something more generic to avoid confusion"
-            im = resize_to_original(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
-            # pp = Preprocessing(trimmed_image[: ,: , slice_iter], 'test')
-            # pp.normalize()
-            # pp.CLAHEClipping()
+            im = resize_image(trimmed_image[: ,: , slice_iter], w=1024, h=1024)
+            pp = Preprocessing(trimmed_image[: ,: , slice_iter], 'test')
+            pp.normalize()
+            pp.CLAHEClipping()
             im = Image.fromarray(pp.img)
             im = im.convert("L")
             im.save(f"biomedparse_datasets/CTPancreas/test/{number}_{slice_iter}_CT_abdomen.png")
@@ -58,13 +57,13 @@ for number in patient_numbers:
                 if label == 0 or not np.any(label_one_hot[: ,: , slice_iter, int(label)].numpy()): # Skip background
                     continue
                 elif label == 2 or label == 3:
-                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                     plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[2]}.png", im_label, cmap=cm.gray)
                 elif label == 4:
-                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                     plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[3]}.png", im_label, cmap=cm.gray)
                 elif label == 1:
-                    im_label = resize_to_original(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
+                    im_label = resize_image(label_one_hot[: ,: , slice_iter, int(label)].numpy(), w=1024, h=1024)
                     plt.imsave(f"biomedparse_datasets/CTPancreas/test_mask/{number}_{slice_iter}_CT_abdomen_{label_dict[1]}.png", im_label, cmap=cm.gray)
 
         print(f"Done with patient file {number}.")

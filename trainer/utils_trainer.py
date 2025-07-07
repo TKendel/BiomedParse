@@ -74,8 +74,8 @@ class UtilsTrainer(DistributedTrainer):
             self.raw_models[module_name].to(self.opt['device'])
 
     def save_checkpoint(self, tag):
-        # tag = str(tag).zfill(8)
-        tag = 'best'
+        tag = str(tag).zfill(8)
+        # tag = 'best'
         logger.warning('Saving checkpoint...')
 
         resume_epoch_idx = self.train_params['current_epoch_idx']
@@ -144,6 +144,10 @@ class UtilsTrainer(DistributedTrainer):
             for module_name in self.model_names:
                 module_save_dir = os.path.join(save_dir, module_name)
                 self.raw_models[module_name].save_pretrained(module_save_dir)
+
+                # Loop through params and save the LoRA states seperate for adapter like use
+                lora_state_dict = {name: param.detach().cpu() for name, param in self.raw_models[module_name].named_parameters() if 'lora_' in name}
+                torch.save(lora_state_dict,  os.path.join(module_save_dir, 'LoRA_state_dict.pt'))
 
         if self.opt['rank'] == 0:
             # save the latest checkpoint location to json file

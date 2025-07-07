@@ -314,10 +314,12 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
 
                 # evaluate and save ckpt every epoch saving the best, overwriting the previous
                 if batch_idx + 1 == self.train_params['updates_per_epoch']:
+                    if self.opt.get('SAVE_CHECKPOINT', True):
+                        self.save_checkpoint(self.train_params['num_updates'])
                     results = self._eval_on_set(self.train_params['num_updates'], self.save_folder)
-                    if results > self.max_dice:
-                        if self.opt.get('SAVE_CHECKPOINT', True):
-                            self.save_checkpoint(self.train_params['num_updates'])
+                    # if results > self.max_dice:
+                    #     if self.opt.get('SAVE_CHECKPOINT', True):
+                    #         self.save_checkpoint(self.train_params['num_updates'])
                     if self.early_stopping(results):
                         self.early_stopping_boolean = True
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
